@@ -94,7 +94,26 @@ body{
   left: 15%;
   border-radius: 5px;
   background: #222;
-  transform:rotate(-2deg);
+  transform:rotate(-3deg);
+
+  animation-delay: 0.5s;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-name: flash-left;
+}
+@keyframes flash-left {
+  0% {
+    transform:rotate(-3deg);
+  }
+  25% {
+    transform:rotate(10deg);
+  }
+  50% {
+    transform:rotate(-3deg);
+  }
+  100% {
+    transform:rotate(-3deg);
+  }
 }
 .eyebrow-right{
   position: absolute;
@@ -104,7 +123,26 @@ body{
   right: 15%;
   border-radius: 5px;
   background: #222;
-  transform:rotate(2deg);
+  transform:rotate(3deg);
+
+  animation-delay: 0.5s;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-name: flash-right;
+}
+@keyframes flash-right {
+  0% {
+    transform:rotate(3deg);
+  }
+  25% {
+    transform:rotate(-10deg);
+  }
+  50% {
+    transform:rotate(3deg);
+  }
+  100% {
+    transform:rotate(3deg);
+  }
 }
 
 .nose-left{
