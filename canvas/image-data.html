@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>MemeMaker</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<style>
+		#image-container {
+			display: flex;
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<input type="file" id="file" />
+	</div>
+	<div id="image-container">
+		<canvas width="500" height="500"></canvas>
+		<div>
+			<span>Top Line:</span><br/>
+			<input id="topLineText" type="text"><br/>
+			<span>Bottom Line:</span><br/>
+			<input id="bottomLineText" type="text"><br/>
+			<button id="saveBtn">Save</button>
+		</div>
+	</div>
+	<script>
+		function textChangeListener (evt) {
+			var id = evt.target.id;
+			var text = evt.target.value;
+
+			if (id == "topLineText") {
+				window.topLineText = text;
+			} else {
+				window.bottomLineText = text;
+			}
+
+			redrawMeme(window.imageSrc, window.topLineText, window.bottomLineText);
+		}
+
+		function redrawMeme(image, topLine, bottomLine) {
+	
+			// Get Canvas2DContext
+			var canvas = document.querySelector('canvas');
+			var ctx = canvas.getContext("2d");
+			
+			if(image)
+				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+			else
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			ctx.lineWidth = 3;
+			ctx.textAlign = 'center';
+			ctx.font = '36pt Impact';
+			ctx.strokeStyle = 'black';
+			ctx.fillStyle = 'white';
+
+			
+			if(topLine != null) {
+				ctx.strokeText(topLine, canvas.width/2, 50);
+				ctx.fillText(topLine, canvas.width/2, 50);				
+			}
+			if(bottomLine != null) {
+				ctx.strokeText(bottomLine, canvas.width/2, 480);
+				ctx.fillText(bottomLine, canvas.width/2, 480);
+			}
+
+
+			var data = ctx.getImageData(0,0,500,500);
+
+			function filterData(imageData) {
+				var numPixels = imageData.data.length /4;
+				for(var i = 0; i < numPixels; i++) {
+					imageData.data[i*4+0] = 255;
+					// imageData.data[i*4+1] = 255;
+					// imageData.data[i*4+2] = 255;
+					imageData.data[i*4+3] = 255;
+				}
+				ctx.putImageData(imageData, 0, 0);
+			}
+			//filterData(data);
+
+			function grayScale(imageData) {
+				var numPixels = imageData.data.length /4;
+				for(var i = 0; i < numPixels; i++) {
+					let red = imageData.data[i*4+0];
+					let green = imageData.data[i*4+1];
+					let blue = imageData.data[i*4+2];
+					let alpha = imageData.data[i*4+3];
+
+					let gray = (red * 0.3 + green * 0.59 + blue * 0.11);
+
+					imageData.data[i*4+0] = gray;
+					imageData.data[i*4+1] = gray;
+					imageData.data[i*4+2] = gray;
+					imageData.data[i*4+3] = gray;
+				}
+				ctx.putImageData(imageData, 0, 0);
+			}
+			grayScale(data);
+		}
+
+		function saveFile() {
+			window.open(document.querySelector('canvas').toDataURL());
+		}
+		
+		function handleFileSelect(evt) {
+			var canvasWidth = 500;
+			var canvasHeight = 500;
+			var file = evt.target.files[0];
+
+			var reader = new FileReader();
+			reader.onload = function(fileObject) {
+				var data = fileObject.target.result;
+
+				// Create an image object
+				var image = new Image();
+				image.onload = function() {
+
+					window.imageSrc = this;
+					redrawMeme(window.imageSrc, null, null);
+				}
+				
+				// Set image data to background image.
+				image.src = data;
+				//console.log(fileObject.target.result);
+			};
+			reader.readAsDataURL(file)
+		}
+
+		window.topLineText = "";
+		window.bottomLineText = "";
+		var input1 = document.getElementById('topLineText');
+		var input2 = document.getElementById('bottomLineText');
+		input1.oninput = textChangeListener;
+		input2.oninput = textChangeListener;
+		document.getElementById('file').addEventListener('change', handleFileSelect, false);
+		document.querySelector('button').addEventListener('click', saveFile, false);
+	</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		
+	</head>
+	<body>
+		<canvas id="c" width="500" height="500" style="border:1px solid #000000;"></canvas>
+		<!-- <img src="Koala.jpg" alt="koala"> -->
+		<script>
+			var c = document.querySelector('#c');
+			var ctx = c.getContext("2d");
+
+			var image = new Image();
+			image.src = "./Koala.jpg";
+
+			image.onload = function() {
+				console.log("Loaded image");
+				ctx.drawImage(image, 150, 150, c.width/3, c.height/3);
+				// var savedImage = c.toDataURL();
+				// window.open(savedImage);
+			};
+
+			ctx.fillStyle = '#5050ff';
+			ctx.fillRect(100, 100, 100, 100);
+			ctx.strokeRect(50, 50, 50, 50);
+			ctx.clearRect(125, 125, 50, 50);
+			
+			ctx.beginPath();
+			ctx.strokeStyle = '#ff5050';
+			ctx.moveTo(25, 25);
+			ctx.lineTo(25, 250);
+			ctx.lineTo(250, 25);
+			ctx.lineTo(25, 25);
+			ctx.stroke();
+			// ctx.fill();
+
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = 3;
+			ctx.font = '36pt Impact';
+			ctx.textAlign = 'center';
+			ctx.strokeText("Hello World!", c.width/2, 450);
+
+			ctx.fillStyle = 'white';
+			ctx.fillText("Hello World!", c.width/2, 450);
+			// ctx.fillText("Hello World!", 100, 250);
+			// ctx.strokeText("Hello World!", 100, 250);
+		</script>
+	</body>
+</html>
